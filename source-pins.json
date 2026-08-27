@@ -3,17 +3,17 @@
   "apps": {
     "flutter": {
       "repository": "happy-wakey/happy-wakey-flutter",
-      "revision": "a8e3a0914efb4a10bd2e7c97f2ccef1302864618",
+      "revision": "589adac3994baf57577cd1577a46c37111fff675",
       "pr": "https://github.com/happy-wakey/happy-wakey-flutter/pull/3"
     },
     "desktop": {
       "repository": "happy-wakey/happy-wakey-desktop-app.rs",
-      "revision": "f96790e268a551a1a0d70565043f421c44d84725",
+      "revision": "f1f8ecff196180da2391172a3facb90cc6ca7f4e",
       "pr": "https://github.com/happy-wakey/happy-wakey-desktop-app.rs/pull/2"
     },
     "e2e": {
       "repository": "happy-wakey/happy-wakey-e2e",
-      "revision": "1b06fc231712d363f9602028f3a77121555a853c",
+      "revision": "7985d721a4f36044296046972f88b36f9db12f25",
       "pr": "https://github.com/happy-wakey/happy-wakey-e2e/pull/5"
     }
   }
