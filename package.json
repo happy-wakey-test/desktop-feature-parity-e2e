@@ -1,0 +1,14 @@
+{
+  "name": "@happy-wakey-test/desktop-feature-parity-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "External e2e contract for Happy Wakey Flutter and Qt desktop feature parity",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:pins": "node scripts/assert-source-pins.mjs"
+  }
+}

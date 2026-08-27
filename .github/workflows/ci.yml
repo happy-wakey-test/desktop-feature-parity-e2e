@@ -1,0 +1,62 @@
+name: desktop-feature-parity
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: happy-wakey-test-desktop-parity-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22'
+      - name: Load source pins
+        id: pins
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+          const pins = JSON.parse(readFileSync('source-pins.json', 'utf8'));
+          const set = (key, value) => console.log(`${key}=${value}`);
+          set('FLUTTER_REPO', pins.apps.flutter.repository);
+          set('FLUTTER_SHA', pins.apps.flutter.revision);
+          set('DESKTOP_REPO', pins.apps.desktop.repository);
+          set('DESKTOP_SHA', pins.apps.desktop.revision);
+          JS
+        shell: bash
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: happy-wakey/happy-wakey-flutter
+          ref: a8e3a0914efb4a10bd2e7c97f2ccef1302864618
+          path: checkouts/flutter
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: happy-wakey/happy-wakey-desktop-app.rs
+          ref: f96790e268a551a1a0d70565043f421c44d84725
+          path: checkouts/desktop
+          persist-credentials: false
+      - name: Prove source pins match checked-out revisions
+        run: |
+          set -euo pipefail
+          test "$(git -C checkouts/flutter rev-parse HEAD)" = "a8e3a0914efb4a10bd2e7c97f2ccef1302864618"
+          test "$(git -C checkouts/desktop rev-parse HEAD)" = "f96790e268a551a1a0d70565043f421c44d84725"
+          node scripts/assert-source-pins.mjs
+      - run: node --test
+        env:
+          HAPPY_WAKEY_FLUTTER_ROOT: ${{ github.workspace }}/checkouts/flutter
+          HAPPY_WAKEY_DESKTOP_ROOT: ${{ github.workspace }}/checkouts/desktop
